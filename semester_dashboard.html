@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Fall 2026</title>
+
+  <!-- Section A: Distinctive editorial visual system -->
+  <style>
+    :root {
+      --ink: #17211d;
+      --muted: #66706a;
+      --paper: #f3efe6;
+      --card: #fffdf7;
+      --line: #d9d2c4;
+      --accent: #e0603e;
+      --accent-soft: #f8d9ca;
+      --forest: #254b3f;
+      --shadow: 0 18px 42px rgba(48, 40, 29, 0.10);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 6% 4%, rgba(224, 96, 62, .14), transparent 24rem),
+        linear-gradient(90deg, rgba(37, 75, 63, .035) 1px, transparent 1px),
+        var(--paper);
+      background-size: auto, 32px 32px, auto;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    button, input { font: inherit; }
+    button { color: inherit; }
+    button:focus-visible, input:focus-visible {
+      outline: 3px solid rgba(224, 96, 62, .35);
+      outline-offset: 3px;
+    }
+
+    .shell { width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 24px 0 72px; }
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--accent);
+      font-size: .74rem;
+      font-weight: 800;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+
+    /* Section B: Semester masthead and elapsed-time meter */
+    .masthead {
+      position: relative;
+      overflow: hidden;
+      min-height: 280px;
+      padding: clamp(26px, 5vw, 58px);
+      border-radius: 30px;
+      color: #fffaf1;
+      background: var(--forest);
+      box-shadow: var(--shadow);
+    }
+    .masthead::after {
+      content: "";
+      position: absolute;
+      width: 290px;
+      height: 290px;
+      right: -70px;
+      top: -85px;
+      border: 42px solid rgba(255,255,255,.07);
+      border-radius: 50%;
+    }
+    .masthead-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1.45fr .8fr; gap: 48px; align-items: end; }
+    h1 {
+      max-width: 760px;
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2.7rem, 7vw, 5.8rem);
+      font-weight: 500;
+      letter-spacing: -.055em;
+      line-height: .94;
+    }
+    .subtitle { max-width: 600px; margin: 20px 0 0; color: rgba(255,250,241,.72); font-size: 1rem; }
+    .week-card { padding: 20px; border: 1px solid rgba(255,255,255,.18); border-radius: 18px; background: rgba(255,255,255,.08); backdrop-filter: blur(12px); }
+    .week-label { display: flex; justify-content: space-between; gap: 12px; font-size: .82rem; color: rgba(255,250,241,.76); }
+    .week-value { display: block; margin: 8px 0 15px; font-family: Georgia, serif; font-size: 2rem; }
+    .meter { height: 9px; overflow: hidden; border-radius: 999px; background: rgba(255,255,255,.14); }
+    .meter > span { display: block; width: 0; height: 100%; border-radius: inherit; background: #f1a07f; transition: width .7s ease; }
+
+    /* Section C: Navigation controls */
+    .control-bar {
+      position: sticky;
+      z-index: 20;
+      top: 12px;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 28px 0;
+      padding: 12px;
+      border: 1px solid rgba(217,210,196,.86);
+      border-radius: 18px;
+      background: rgba(255,253,247,.9);
+      box-shadow: 0 8px 28px rgba(48,40,29,.08);
+      backdrop-filter: blur(16px);
+    }
+    .filters { display: flex; flex-wrap: wrap; gap: 8px; }
+    .filter-button {
+      padding: 9px 13px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: transparent;
+      cursor: pointer;
+      font-size: .84rem;
+      font-weight: 700;
+      transition: .18s ease;
+    }
+    .filter-button:hover { transform: translateY(-1px); border-color: #b9ad9b; }
+    .filter-button.active { color: #fff; border-color: var(--forest); background: var(--forest); }
+    .jump-button { border-style: dashed; }
+    .toggle { display: flex; align-items: center; gap: 9px; white-space: nowrap; padding: 0 5px; font-size: .86rem; font-weight: 700; cursor: pointer; }
+    .toggle input { width: 17px; height: 17px; accent-color: var(--accent); }
+
+    /* Section D: Course information cards */
+    .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 16px; margin: 42px 0 16px; }
+    h2 { margin: 0; font-family: Georgia, serif; font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 500; letter-spacing: -.035em; }
+    .section-note { max-width: 460px; margin: 0; color: var(--muted); font-size: .9rem; text-align: right; }
+    .course-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
+    .course-card {
+      grid-column: span 6;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-top: 7px solid var(--course-color, var(--accent));
+      border-radius: var(--radius);
+      background: var(--card);
+      box-shadow: 0 8px 25px rgba(48,40,29,.06);
+    }
+    .course-card__head { display: flex; justify-content: space-between; gap: 18px; padding: 22px 22px 14px; }
+    .course-code { margin: 0 0 3px; color: var(--course-color, var(--accent)); font-size: .76rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+    h3 { margin: 0; font-family: Georgia, serif; font-size: 1.45rem; font-weight: 500; line-height: 1.15; }
+    .progress-badge { flex: 0 0 auto; min-width: 72px; padding: 9px 10px; border-radius: 13px; text-align: center; background: #f0ece2; font-size: .75rem; color: var(--muted); }
+    .progress-badge strong { display: block; color: var(--ink); font-size: 1rem; }
+    .course-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin: 0; border-top: 1px solid var(--line); }
+    .fact { min-height: 86px; padding: 14px 22px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .fact:nth-child(even) { border-right: 0; }
+    .fact dt { margin-bottom: 4px; color: var(--muted); font-size: .67rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+    .fact dd { margin: 0; font-size: .88rem; }
+    .tool-list { display: flex; flex-wrap: wrap; gap: 6px; padding: 16px 22px 20px; }
+    .tool-chip { padding: 5px 9px; border-radius: 7px; background: color-mix(in srgb, var(--course-color, var(--accent)) 12%, white); font-size: .74rem; font-weight: 750; }
+
+    /* Section E: Textbook callout and grading panels */
+    .reference-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .panel { padding: 24px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); box-shadow: 0 8px 25px rgba(48,40,29,.05); }
+    .book-list, .grading-list { display: grid; gap: 12px; margin-top: 17px; }
+    .book { padding-left: 14px; border-left: 4px solid var(--accent); }
+    .book strong, .grade-row strong { display: block; }
+    .book small { color: var(--muted); }
+    .grade-course + .grade-course { margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--line); }
+    .grade-course-title { display: flex; align-items: center; gap: 8px; margin-bottom: 11px; font-size: .88rem; font-weight: 850; }
+    .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--course-color, var(--accent)); }
+    .grade-row { display: grid; grid-template-columns: 1fr 52px; gap: 12px; align-items: center; margin: 9px 0; font-size: .82rem; }
+    .grade-track { grid-column: 1 / -1; height: 5px; margin-top: -7px; overflow: hidden; border-radius: 9px; background: #ebe5d9; }
+    .grade-track span { display: block; height: 100%; border-radius: inherit; background: var(--course-color, var(--accent)); }
+
+    /* Section F: Unified chronological timeline */
+    .timeline { border-top: 1px solid var(--line); }
+    .date-group { display: grid; grid-template-columns: 150px 1fr; border-bottom: 1px solid var(--line); }
+    .date-group.next-up { background: linear-gradient(90deg, rgba(224,96,62,.09), transparent 46%); }
+    .date-group.next-up .date-column time::after { content: "Next up"; display: block; width: fit-content; margin-top: 7px; padding: 3px 6px; border-radius: 5px; color: #9d341c; background: var(--accent-soft); font-family: Inter, sans-serif; font-size: .58rem; font-weight: 850; letter-spacing: .06em; text-transform: uppercase; }
+    .date-column { padding: 25px 20px 25px 0; }
+    .date-column time { position: sticky; top: 96px; font-family: Georgia, serif; font-size: 1.05rem; }
+    .date-column small { display: block; margin-top: 3px; color: var(--muted); font-size: .72rem; }
+    .date-items { border-left: 1px solid var(--line); }
+    .timeline-item {
+      --course-color: var(--accent);
+      display: grid;
+      grid-template-columns: 36px minmax(0, 1fr) auto;
+      gap: 13px;
+      align-items: start;
+      padding: 20px;
+      border-bottom: 1px dashed var(--line);
+      transition: opacity .2s ease, background .2s ease;
+    }
+    .timeline-item:last-child { border-bottom: 0; }
+    .timeline-item:hover { background: rgba(255,255,255,.48); }
+    .timeline-item.done { opacity: .48; }
+    .timeline-item.done .item-title { text-decoration: line-through; }
+    .check-wrap { position: relative; display: grid; place-items: center; width: 30px; height: 30px; margin-top: 2px; }
+    .check-wrap input { position: absolute; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+    .custom-check { display: grid; place-items: center; width: 23px; height: 23px; border: 2px solid #a99f90; border-radius: 7px; background: var(--card); pointer-events: none; }
+    .check-wrap input:checked + .custom-check { color: white; border-color: var(--course-color); background: var(--course-color); }
+    .check-wrap input:checked + .custom-check::after { content: "✓"; font-size: .83rem; font-weight: 900; }
+    .item-title { margin: 0; font-size: .97rem; font-weight: 780; }
+    .item-detail { margin: 4px 0 0; color: var(--muted); font-size: .8rem; }
+    .tags { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; max-width: 230px; }
+    .tag { padding: 5px 8px; border-radius: 6px; background: #e9e4da; font-size: .66rem; font-weight: 850; letter-spacing: .045em; text-transform: uppercase; }
+    .tag.course { color: #fff; background: var(--course-color); }
+    .tag.major { color: #9d341c; background: var(--accent-soft); }
+
+    /* Section G: Empty and status states */
+    .empty-state { padding: 44px 28px; border: 1px dashed #bfb4a3; border-radius: var(--radius); text-align: center; background: rgba(255,253,247,.55); }
+    .empty-state .mark { display: inline-grid; place-items: center; width: 52px; height: 52px; margin-bottom: 10px; border-radius: 50%; color: #fff; background: var(--forest); font-family: Georgia, serif; font-size: 1.5rem; }
+    .empty-state h3 { margin-bottom: 8px; }
+    .empty-state p { max-width: 580px; margin: 0 auto; color: var(--muted); }
+    .status { position: fixed; right: 18px; bottom: 18px; z-index: 30; padding: 9px 13px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); box-shadow: var(--shadow); color: var(--muted); font-size: .72rem; opacity: 0; transform: translateY(8px); transition: .2s ease; pointer-events: none; }
+    .status.show { opacity: 1; transform: translateY(0); }
+
+    /* Section H: Responsive and reduced-motion behavior */
+    @media (max-width: 820px) {
+      .masthead-grid, .reference-grid { grid-template-columns: 1fr; }
+      .course-card { grid-column: span 12; }
+      .control-bar, .section-heading { align-items: stretch; flex-direction: column; }
+      .section-note { text-align: left; }
+      .date-group { grid-template-columns: 92px 1fr; }
+      .timeline-item { grid-template-columns: 32px 1fr; }
+      .tags { grid-column: 2; justify-content: flex-start; max-width: none; }
+    }
+    @media (max-width: 540px) {
+      .shell { width: min(100% - 20px, 1180px); padding-top: 10px; }
+      .masthead { padding: 28px 22px; border-radius: 22px; }
+      .control-bar { top: 6px; }
+      .date-group { display: block; }
+      .date-column { padding: 20px 0 9px; }
+      .date-column time { position: static; }
+      .date-items { border-left: 0; }
+      .course-facts { grid-template-columns: 1fr; }
+      .fact { border-right: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Section I: Application mount point -->
+  <main class="shell" id="app" aria-live="polite"></main>
+  <div class="status" id="saveStatus" role="status">Saved</div>
+
+  <!-- Section J: Syllabus-derived data embedded by Python -->
+  <script type="application/json" id="dashboard-data">{"semester": {"name": "Fall 2026", "start_date": "2026-08-24", "end_date": "2026-12-11"}, "courses": [{"id": "ppd554", "code": "PPD 554", "title": "Foundations of Policy Analysis", "color": "#d85b3f", "instructor": "REDACTED", "meeting": "REDACTED", "location": "REDACTED", "office_hours": "REDACTED", "assistant": "REDACTED", "tools": ["Brightspace", "CATME surveys"], "grading": [{"label": "Participation, discussion boards, quizzes", "percent": 10}, {"label": "Four lab exercises", "percent": 20}, {"label": "Issue diagnosis memo", "percent": 15}, {"label": "Issue diagnosis presentation", "percent": 10}, {"label": "Policy analysis sentence outline", "percent": 5}, {"label": "Final group presentation", "percent": 10}, {"label": "Final communications briefer", "percent": 5}, {"label": "Final policy analysis paper", "percent": 25}], "textbooks": [{"title": "A Practical Guide for Policy Analysis: The Eightfold Path to More Effective Problem Solving", "authors": "Eugene Bardach & Eric Patashnik", "note": "7th ed. · Required"}, {"title": "The CQ Press Writing Guide for Public Policy", "authors": "Andrew Pennock", "note": "2nd ed. · Required"}], "timeline": [{"id": "ppd554-2026-08-27-dfe56a1e44d5", "date": "2026-08-27", "type": "reading", "importance": "routine", "title": "Class syllabus", "detail": "Required · Course overview"}, {"id": "ppd554-2026-08-27-bc3a8af38eba", "date": "2026-08-27", "type": "reading", "importance": "routine", "title": "What’s Wrong with Policy Education", "detail": "Francis Fukuyama (2018) · Required"}, {"id": "ppd554-2026-08-27-bb7429498032", "date": "2026-08-27", "type": "reading", "importance": "routine", "title": "What Do Students Lose When They Stop Writing?", "detail": "Dana Goldstein (2026) · Required"}, {"id": "ppd554-2026-08-27-516ae88b0505", "date": "2026-08-27", "type": "reading", "importance": "routine", "title": "The Problem with Public Policy Schools", "detail": "James Piereson & Naomi Schaefer Riley (2013) · Required"}, {"id": "ppd554-2026-08-27-a814d4e1287f", "date": "2026-08-27", "type": "reading", "importance": "routine", "title": "A Public Policy Paradox", "detail": "Alice Rivlin (1984), pp. 17–22 · Required"}, {"id": "ppd554-2026-08-27-439a710922fc", "date": "2026-08-27", "type": "reading", "importance": "routine", "title": "The Once and Future School of Public Policy", "detail": "Aaron Wildavsky (1985), pp. 24–41 · Required"}, {"id": "ppd554-2026-08-27-88fd3c4c588a", "date": "2026-08-27", "type": "reading", "importance": "routine", "title": "The Historical Roots of the Field", "detail": "Peter deLeon (2008), pp. 39–57 · Recommended"}, {"id": "ppd554-2026-09-03-d897d254a68b", "date": "2026-09-03", "type": "task", "importance": "routine", "title": "Discussion Board #1", "detail": "Due in Brightspace"}, {"id": "ppd554-2026-09-03-bf876dbd97ae", "date": "2026-09-03", "type": "reading", "importance": "routine", "title": "How Effective Is Policy Analysis?", "detail": "John Hird (2014), pp. 60–84 · Required"}, {"id": "ppd554-2026-09-03-958abbc49b6b", "date": "2026-09-03", "type": "reading", "importance": "routine", "title": "Professional Roles for Policy Analysts: A Critical Assessment", "detail": "Hank Jenkins-Smith (1982), pp. 88–100 · Required"}, {"id": "ppd554-2026-09-03-ca709ac75b29", "date": "2026-09-03", "type": "reading", "importance": "routine", "title": "Policy Paradox — Introduction", "detail": "Deborah Stone (2012), pp. 1–15 · Required"}, {"id": "ppd554-2026-09-03-380004afe978", "date": "2026-09-03", "type": "reading", "importance": "routine", "title": "What Is Policy Analysis?", "detail": "David Weimer & Aidan Vining (2017), pp. 23–38 · Required"}, {"id": "ppd554-2026-09-03-805051f3d5eb", "date": "2026-09-03", "type": "reading", "importance": "routine", "title": "Analysis of Race as Policy Analysis", "detail": "Samuel Myers Jr. (2002), pp. 169–190 · Recommended"}, {"id": "ppd554-2026-09-03-290ed2ab733b", "date": "2026-09-03", "type": "reading", "importance": "routine", "title": "How Food Banks Use Markets to Feed the Poor", "detail": "Canice Prendergast (2017), pp. 145–162 · Recommended"}, {"id": "ppd554-2026-09-03-e436e0986673", "date": "2026-09-03", "type": "reading", "importance": "routine", "title": "The Methodology of Normative Policy Analysis", "detail": "Christopher Robert & Richard Zeckhauser (2011), pp. 613–643 · Recommended"}, {"id": "ppd554-2026-09-03-1fb393415326", "date": "2026-09-03", "type": "reading", "importance": "routine", "title": "Policy Analysis as a Profession and a Process", "detail": "Michael Munger (2000), pp. 1–17 · Recommended"}, {"id": "ppd554-2026-09-03-d9db9af9041e", "date": "2026-09-03", "type": "reading", "importance": "routine", "title": "The Need for Simple Methods of Policy Analysis and Planning", "detail": "Carl Patton, David Sawicki & Jennifer Clark (2012), pp. 2–20 · Recommended"}, {"id": "ppd554-2026-09-10-9481151576fb", "date": "2026-09-10", "type": "task", "importance": "routine", "title": "Discussion Board #2", "detail": "Due in Brightspace"}, {"id": "ppd554-2026-09-10-58405769aebf", "date": "2026-09-10", "type": "reading", "importance": "routine", "title": "Step One: Define the Problem", "detail": "Bardach & Patashnik (2024), pp. 1–16 · Required"}, {"id": "ppd554-2026-09-10-1cb834cfbdbf", "date": "2026-09-10", "type": "reading", "importance": "routine", "title": "Structuring Policy Problems", "detail": "William Dunn (2017), pp. 68–81 · Required"}, {"id": "ppd554-2026-09-10-806d817de648", "date": "2026-09-10", "type": "reading", "importance": "routine", "title": "Thinking About the Future: Prospective Policy Analysis", "detail": "Peter Linquiti (2023), pp. 13–19 · Required"}, {"id": "ppd554-2026-09-10-9b7755b6f6ea", "date": "2026-09-10", "type": "reading", "importance": "routine", "title": "Dilemmas in a General Theory of Planning", "detail": "Horst Rittel & Melvin Webber (1973), pp. 155–169 · Required"}, {"id": "ppd554-2026-09-10-3025da62bd3d", "date": "2026-09-10", "type": "reading", "importance": "routine", "title": "Causal Stories and the Formation of Policy Agendas", "detail": "Deborah Stone (1989), pp. 281–300 · Required"}, {"id": "ppd554-2026-09-10-2246ee0a5e3e", "date": "2026-09-10", "type": "reading", "importance": "routine", "title": "Verifying, Defining, and Detailing the Problem", "detail": "Patton, Sawicki & Clark, pp. 140–175 · Recommended"}, {"id": "ppd554-2026-09-17-937f291f2eb7", "date": "2026-09-17", "type": "task", "importance": "routine", "title": "Policy Interests Write-Up", "detail": "Due before class"}, {"id": "ppd554-2026-09-17-1749243fb895", "date": "2026-09-17", "type": "reading", "importance": "routine", "title": "Tradecraft: Professional Writing as Problem Solving", "detail": "Juliet Musso, Robert Biller & Robert Myrtle (2000), pp. 635–646 · Required"}, {"id": "ppd554-2026-09-17-d2260822ffe4", "date": "2026-09-17", "type": "reading", "importance": "routine", "title": "Audiences & Audience-Centered Writing in Public Policy", "detail": "Andrew Pennock (2023), ch. 1, pp. 1–12 · Required"}, {"id": "ppd554-2026-09-17-9b8af090373f", "date": "2026-09-17", "type": "reading", "importance": "routine", "title": "Generating and Organizing Your Argument", "detail": "Andrew Pennock (2023), ch. 2, pp. 15–36 · Required"}, {"id": "ppd554-2026-09-17-27ec658b9223", "date": "2026-09-17", "type": "reading", "importance": "routine", "title": "Social Construction of Target Populations", "detail": "Anne Schneider & Helen Ingram (1993), pp. 334–347 · Required"}, {"id": "ppd554-2026-09-17-088aacd569e8", "date": "2026-09-17", "type": "reading", "importance": "routine", "title": "Case study readings", "detail": "Titles provided with the case study · Required"}, {"id": "ppd554-2026-09-17-46291f91e7d1", "date": "2026-09-17", "type": "reading", "importance": "routine", "title": "What to Do When Stakeholders Matter", "detail": "John Bryson (2004), pp. 21–53 · Recommended"}, {"id": "ppd554-2026-09-24-7173d86c9ef3", "date": "2026-09-24", "type": "task", "importance": "routine", "title": "Lab #1: Problem Definition", "detail": "Due before class"}, {"id": "ppd554-2026-09-24-e328a1b204d4", "date": "2026-09-24", "type": "reading", "importance": "routine", "title": "Part II: Assembling Evidence", "detail": "Bardach & Patashnik (2024), pp. 97–123 · Required"}, {"id": "ppd554-2026-09-24-10ad5337ce36", "date": "2026-09-24", "type": "reading", "importance": "routine", "title": "Appendix E: Incorporating Big Data and Rigorous Scientific Evidence", "detail": "Bardach & Patashnik (2024), pp. 177–180 · Required"}, {"id": "ppd554-2026-09-24-e407d02eb71f", "date": "2026-09-24", "type": "reading", "importance": "routine", "title": "Gathering Information for Policy Analysis", "detail": "Weimer & Vining (2017), ch. 14, pp. 325–339 · Required"}, {"id": "ppd554-2026-09-24-6da2cb3cf8dc", "date": "2026-09-24", "type": "reading", "importance": "routine", "title": "Finding and Evaluating Sources", "detail": "Wayne Booth et al. (2024), pp. 64–98 · Recommended"}, {"id": "ppd554-2026-09-24-f0d4528bbf33", "date": "2026-09-24", "type": "reading", "importance": "routine", "title": "Module 3: In-Depth Interviews", "detail": "Natasha Mack et al. (2012) · Recommended"}, {"id": "ppd554-2026-09-24-54e3263cd553", "date": "2026-09-24", "type": "reading", "importance": "routine", "title": "The Politics of Evidence — Introduction", "detail": "Justin Parkhurst (2017), pp. 3–14 · Recommended"}, {"id": "ppd554-2026-09-24-9346d09ecf8b", "date": "2026-09-24", "type": "reading", "importance": "routine", "title": "The Promise of Evidence-Based Policymaking", "detail": "Commission on Evidence-Based Policymaking · Recommended"}, {"id": "ppd554-2026-10-01-d8baa3c8892f", "date": "2026-10-01", "type": "task", "importance": "major", "title": "Issue Diagnosis Memo", "detail": "Due in Brightspace · 15%"}, {"id": "ppd554-2026-10-01-1bf574299863", "date": "2026-10-01", "type": "task", "importance": "routine", "title": "Lab #2: Assembling Evidence", "detail": "Due before class"}, {"id": "ppd554-2026-10-01-2dbf319577f1", "date": "2026-10-01", "type": "reading", "importance": "routine", "title": "Step 3: Construct the Alternatives", "detail": "Bardach & Patashnik (2024), pp. 22–33 · Required"}, {"id": "ppd554-2026-10-01-957b470f97e9", "date": "2026-10-01", "type": "reading", "importance": "routine", "title": "Appendix B: Things Governments Do", "detail": "Bardach & Patashnik (2024), pp. 159–169 · Required"}, {"id": "ppd554-2026-10-01-8c0481e54a4c", "date": "2026-10-01", "type": "reading", "importance": "routine", "title": "Hints for Crafting Alternative Policies", "detail": "Peter J. May (1981), pp. 227–244 · Required"}, {"id": "ppd554-2026-10-01-efdccc198943", "date": "2026-10-01", "type": "reading", "importance": "routine", "title": "Behavioral Assumptions of Policy Tools", "detail": "Anne Schneider & Helen Ingram (1990), pp. 510–529 · Required"}, {"id": "ppd554-2026-10-01-7e1de6e539c0", "date": "2026-10-01", "type": "reading", "importance": "routine", "title": "Correcting Market and Government Failures", "detail": "Weimer & Vining (2017), pp. 205–259 · Recommended"}, {"id": "ppd554-2026-10-01-c2f03ff19498", "date": "2026-10-01", "type": "reading", "importance": "routine", "title": "Identifying Alternatives", "detail": "Patton, Sawicki & Clark (2012), pp. 215–237 · Recommended"}, {"id": "ppd554-2026-10-15-6e374960e574", "date": "2026-10-15", "type": "task", "importance": "routine", "title": "Lab #3: Policy Alternatives", "detail": "Due before class"}, {"id": "ppd554-2026-10-15-900a0691d6b4", "date": "2026-10-15", "type": "reading", "importance": "routine", "title": "Step 4: Select the Criteria", "detail": "Bardach & Patashnik (2024), pp. 33–50 · Required"}, {"id": "ppd554-2026-10-15-205207be8336", "date": "2026-10-15", "type": "reading", "importance": "routine", "title": "Equity", "detail": "Deborah Stone (2012) · Required"}, {"id": "ppd554-2026-10-15-336b62ee74c3", "date": "2026-10-15", "type": "reading", "importance": "routine", "title": "Equality of What?", "detail": "Amartya Sen (1979) · Recommended"}, {"id": "ppd554-2026-10-15-88ccbe006c84", "date": "2026-10-15", "type": "reading", "importance": "routine", "title": "Intersectionality and Public Policy", "detail": "Olena Hankivsky & Renee Cormier (2011), pp. 217–229 · Recommended"}, {"id": "ppd554-2026-10-15-889ce73c3d34", "date": "2026-10-15", "type": "reading", "importance": "routine", "title": "Operationalizing Lasswell’s Call for Clarification of Value Goals", "detail": "Peter Linquiti (2024), pp. 193–219 · Recommended"}, {"id": "ppd554-2026-10-15-6fbcfc2d6d5e", "date": "2026-10-15", "type": "reading", "importance": "routine", "title": "Evaluating Equity in Social Policy", "detail": "August Österle (2002), pp. 46–59 · Recommended"}, {"id": "ppd554-2026-10-15-080f49c0a3c5", "date": "2026-10-15", "type": "reading", "importance": "routine", "title": "Establishing Evaluation Criteria", "detail": "Patton, Sawicki & Clark (2012), pp. 176–206 · Recommended"}, {"id": "ppd554-2026-10-22-e71573c2f774", "date": "2026-10-22", "type": "task", "importance": "major", "title": "Issue Diagnosis Group Presentation", "detail": "In class · 10%"}, {"id": "ppd554-2026-10-22-1904251298ac", "date": "2026-10-22", "type": "reading", "importance": "routine", "title": "Political Feasibility and Policy Analysis", "detail": "Arnold Meltsner (1972), pp. 859–867 · Required"}, {"id": "ppd554-2026-10-22-fbd41264d46c", "date": "2026-10-22", "type": "reading", "importance": "routine", "title": "Policy Adoption", "detail": "Weimer & Vining (2017), ch. 11, pp. 259–279 · Required"}, {"id": "ppd554-2026-10-22-2ca8dcf118e6", "date": "2026-10-22", "type": "reading", "importance": "routine", "title": "Democracy as Problem Solving — Introduction", "detail": "Xavier de Souza Briggs (2008), pp. 3–25 · Recommended"}, {"id": "ppd554-2026-10-22-f6101e124e51", "date": "2026-10-22", "type": "reading", "importance": "routine", "title": "Varieties of Participation in Complex Governance", "detail": "Archon Fung (2006), pp. 66–75 · Recommended"}, {"id": "ppd554-2026-10-22-4a3cf7e43441", "date": "2026-10-22", "type": "reading", "importance": "routine", "title": "Ten Things that Political Scientists Know That You Don’t", "detail": "Hans Noel (2010), pp. 1–19 · Recommended"}, {"id": "ppd554-2026-10-22-fac5928a1a3f", "date": "2026-10-22", "type": "reading", "importance": "routine", "title": "Policy Feedback in a Racialized Polity", "detail": "Jamila Michener (2019), pp. 1–23 · Recommended"}, {"id": "ppd554-2026-10-22-f84d81a3271c", "date": "2026-10-22", "type": "reading", "importance": "routine", "title": "A Theory of Groups and Organizations", "detail": "Mancur Olson (1965), pp. 5–52 · Recommended"}, {"id": "ppd554-2026-10-29-ac25d3dea537", "date": "2026-10-29", "type": "reading", "importance": "routine", "title": "Step 5: Project the Outcomes", "detail": "Bardach & Patashnik (2024), pp. 50–72 · Required"}, {"id": "ppd554-2026-10-29-7bbdc3a25146", "date": "2026-10-29", "type": "reading", "importance": "routine", "title": "An Introduction to Modeling", "detail": "Lee Friedman (2002), pp. 19–25 · Required"}, {"id": "ppd554-2026-10-29-83d9c56e54c2", "date": "2026-10-29", "type": "reading", "importance": "routine", "title": "Aiding Choices with the Criterion-Alternative Matrix", "detail": "Duncan MacRae & Dale Whittington (1997), pp. 193–228 · Required"}, {"id": "ppd554-2026-10-29-f1a96cdf9adb", "date": "2026-10-29", "type": "reading", "importance": "routine", "title": "Forecasting Expected Policy Outcomes", "detail": "William Dunn (2017), pp. 118–147 · Recommended"}, {"id": "ppd554-2026-10-29-c093d39df6cb", "date": "2026-10-29", "type": "reading", "importance": "routine", "title": "Evaluating Alternative Policies", "detail": "Patton, Sawicki & Clark (2012), pp. 243–313 · Recommended"}, {"id": "ppd554-2026-11-05-76ad69dc10d4", "date": "2026-11-05", "type": "task", "importance": "routine", "title": "Lab #4: CAM / Projecting Outcomes", "detail": "Due before class"}, {"id": "ppd554-2026-11-05-142cf2f0e1e1", "date": "2026-11-05", "type": "reading", "importance": "routine", "title": "Step 6: Confront the Tradeoffs", "detail": "Bardach & Patashnik (2024), pp. 72–78 · Required"}, {"id": "ppd554-2026-11-05-20da2f28f0f6", "date": "2026-11-05", "type": "reading", "importance": "routine", "title": "Step 7: Stop, Focus, Narrow, Deepen, Decide!", "detail": "Bardach & Patashnik (2024), pp. 79–83 · Required"}, {"id": "ppd554-2026-11-05-ae2937f88f20", "date": "2026-11-05", "type": "reading", "importance": "routine", "title": "The Science of Muddling Through", "detail": "Charles Lindblom (1959), pp. 79–88 · Required"}, {"id": "ppd554-2026-11-05-6ba97d15c42d", "date": "2026-11-05", "type": "reading", "importance": "routine", "title": "Confronting Tradeoffs", "detail": "Juliet Musso · Required"}, {"id": "ppd554-2026-11-05-f850ab2b629b", "date": "2026-11-05", "type": "reading", "importance": "routine", "title": "Displaying Alternatives and Distinguishing among Them", "detail": "Patton, Sawicki & Clark (2012), pp. 315–337 · Recommended"}, {"id": "ppd554-2026-11-12-22614f4c4e71", "date": "2026-11-12", "type": "task", "importance": "routine", "title": "Discussion Board #3", "detail": "Due in Brightspace"}, {"id": "ppd554-2026-11-12-a8fc4e97bed1", "date": "2026-11-12", "type": "task", "importance": "routine", "title": "Policy Analysis Sentence Outline", "detail": "Due before class · 5%"}, {"id": "ppd554-2026-11-12-aa2b9a3657bc", "date": "2026-11-12", "type": "reading", "importance": "routine", "title": "Why Policy Analysis and Ethics Are Incompatible", "detail": "Douglas Amy (1984), pp. 573–591 · Required"}, {"id": "ppd554-2026-11-12-0ed65615f37f", "date": "2026-11-12", "type": "reading", "importance": "routine", "title": "Toward Professional Ethics", "detail": "Weimer & Vining (2017), pp. 42–56 · Required"}, {"id": "ppd554-2026-11-12-62b017e0e2ff", "date": "2026-11-12", "type": "reading", "importance": "routine", "title": "Thinking, Fast and Slow — excerpts", "detail": "Daniel Kahneman (2011) · Required"}, {"id": "ppd554-2026-11-12-e4b762d7f2e6", "date": "2026-11-12", "type": "reading", "importance": "routine", "title": "The Nature of Implicit Prejudice", "detail": "Curtis Hardin & Mahzarin Banaji (2013), pp. 13–31 · Recommended"}, {"id": "ppd554-2026-11-12-59ddf7b37b68", "date": "2026-11-12", "type": "reading", "importance": "routine", "title": "Participatory Policy-Making Toolkit", "detail": "Antonnet Johnson & Kate Hamaji (2021) · Recommended"}, {"id": "ppd554-2026-11-12-e2f3156d25f6", "date": "2026-11-12", "type": "reading", "importance": "routine", "title": "Thin Simplifications and Practical Knowledge: Mētis", "detail": "James Scott (1998), pp. 309–341 · Recommended"}, {"id": "ppd554-2026-11-12-84c0a7d8ca6b", "date": "2026-11-12", "type": "reading", "importance": "routine", "title": "Economic Reasoning and the Ethics of Policy", "detail": "Thomas Schelling (1984), pp. 1–26 · Recommended"}, {"id": "ppd554-2026-11-19-6bbc89ec1e0b", "date": "2026-11-19", "type": "reading", "importance": "routine", "title": "Step 8: Tell Your Story", "detail": "Bardach & Patashnik (2024), pp. 84–93 · Required"}, {"id": "ppd554-2026-11-19-6a3c6fd07ad9", "date": "2026-11-19", "type": "reading", "importance": "routine", "title": "Landing on Your Feet: Organizing Your Policy Analysis", "detail": "Weimer & Vining (2017), pp. 340–376 · Required"}, {"id": "ppd554-2026-11-19-e563e6bdb6d3", "date": "2026-11-19", "type": "reading", "importance": "routine", "title": "Pulling It All Together", "detail": "Andrew Pennock (2023), ch. 7, pp. 109–122 · Required"}, {"id": "ppd554-2026-11-19-f9e5f9707336", "date": "2026-11-19", "type": "reading", "importance": "routine", "title": "Revising and Organizing", "detail": "Wayne Booth et al. (2024), ch. 11 · Required"}, {"id": "ppd554-2026-11-19-e417e8af1619", "date": "2026-11-19", "type": "reading", "importance": "routine", "title": "Revising Style: Telling Your Story Clearly", "detail": "Wayne Booth et al. (2024), ch. 15 · Required"}, {"id": "ppd554-2026-11-19-8dabfa2d1fbc", "date": "2026-11-19", "type": "reading", "importance": "routine", "title": "Visually Communicating: Creating and Writing About Tables", "detail": "Andrew Pennock (2023), pp. 75–92 · Recommended"}, {"id": "ppd554-2026-12-03-d407eacbcf35", "date": "2026-12-03", "type": "task", "importance": "major", "title": "Final Group Presentation", "detail": "In class · 10%"}, {"id": "ppd554-2026-12-10-25e5920490ca", "date": "2026-12-10", "type": "task", "importance": "routine", "title": "Final Communications Briefer", "detail": "Final exam day · 5%"}, {"id": "ppd554-2026-12-10-59ea828f78ce", "date": "2026-12-10", "type": "task", "importance": "major", "title": "Final Policy Analysis Paper", "detail": "Final exam day · 25%"}]}, {"id": "ppd558", "code": "PPD 558", "title": "Multivariate Statistical Analysis", "color": "#347a72", "instructor": "REDACTED", "meeting": "REDACTED", "location": "REDACTED", "office_hours": "REDACTED", "assistant": "REDACTED", "tools": ["Stata/BE 17+", "Laptop", "Brightspace", "VMware Horizon (CloudApps option)"], "grading": [{"label": "Problem sets", "percent": 15}, {"label": "In-class activities and participation", "percent": 15}, {"label": "Analysis project", "percent": 25}, {"label": "Midterm exam", "percent": 20}, {"label": "Final exam", "percent": 25}], "textbooks": [], "timeline": [{"id": "ppd558-2026-08-25-7f6c17db1211", "date": "2026-08-25", "type": "reading", "importance": "routine", "title": "Using Econometrics — ch. 17", "detail": "A.H. Studenmund, 6th ed. · Optional"}, {"id": "ppd558-2026-08-25-d65292f381cc", "date": "2026-08-25", "type": "reading", "importance": "routine", "title": "Introductory Econometrics — chs. 1, 2.1–2.6; Math Refresher A–C", "detail": "Jeffrey Wooldridge · Optional; excludes A.5"}, {"id": "ppd558-2026-09-01-c084f3726b79", "date": "2026-09-01", "type": "reading", "importance": "routine", "title": "Using Econometrics — chs. 1–3.2, 5", "detail": "A.H. Studenmund · Optional"}, {"id": "ppd558-2026-09-01-5ee3cdf9c751", "date": "2026-09-01", "type": "reading", "importance": "routine", "title": "Introductory Econometrics — chs. 3.1–3.2, 4.2–4.6", "detail": "Jeffrey Wooldridge · Optional"}, {"id": "ppd558-2026-09-08-80a3323c392f", "date": "2026-09-08", "type": "task", "importance": "routine", "title": "Problem Set 1", "detail": "Due by start of class"}, {"id": "ppd558-2026-09-08-5d46ca9d429c", "date": "2026-09-08", "type": "reading", "importance": "routine", "title": "Using Econometrics — chs. 4, 9, 10", "detail": "A.H. Studenmund · Optional"}, {"id": "ppd558-2026-09-08-d6df15e7389d", "date": "2026-09-08", "type": "reading", "importance": "routine", "title": "Introductory Econometrics — chs. 3.3–4.1, 4.7, 8, 12.1–12.3", "detail": "Jeffrey Wooldridge · Optional"}, {"id": "ppd558-2026-09-15-ed40617988e4", "date": "2026-09-15", "type": "task", "importance": "routine", "title": "Problem Set 2", "detail": "Due by start of class"}, {"id": "ppd558-2026-09-15-f246d8064a95", "date": "2026-09-15", "type": "reading", "importance": "routine", "title": "Using Econometrics — chs. 3.3, 6–7", "detail": "A.H. Studenmund · Optional; topic spans weeks 4–5"}, {"id": "ppd558-2026-09-15-ce04ac82426f", "date": "2026-09-15", "type": "reading", "importance": "routine", "title": "Introductory Econometrics — chs. 2.7, 6, 7.1–7.4, 9.1–9.2", "detail": "Jeffrey Wooldridge · Optional; topic spans weeks 4–5"}, {"id": "ppd558-2026-09-22-3116fcfe664b", "date": "2026-09-22", "type": "task", "importance": "routine", "title": "Analysis Project: Proposal", "detail": "Due by start of class"}, {"id": "ppd558-2026-09-29-39e1f8b5315d", "date": "2026-09-29", "type": "task", "importance": "routine", "title": "Problem Set 3", "detail": "Due by start of class"}, {"id": "ppd558-2026-09-29-2cbfa8aeaa64", "date": "2026-09-29", "type": "reading", "importance": "routine", "title": "Using Econometrics — chs. 8, 11", "detail": "A.H. Studenmund · Optional"}, {"id": "ppd558-2026-09-29-5a0cd300859b", "date": "2026-09-29", "type": "reading", "importance": "routine", "title": "Introductory Econometrics — chs. 3.4a, 9.5", "detail": "Jeffrey Wooldridge · Optional"}, {"id": "ppd558-2026-10-06-fbe3f9e39708", "date": "2026-10-06", "type": "task", "importance": "routine", "title": "In-Class Analysis Exercise", "detail": "Graded in-class activity"}, {"id": "ppd558-2026-10-06-e49e594776d7", "date": "2026-10-06", "type": "reading", "importance": "routine", "title": "Using Econometrics — ch. 13", "detail": "A.H. Studenmund · Optional; categorical models"}, {"id": "ppd558-2026-10-06-33cadfaa0a83", "date": "2026-10-06", "type": "reading", "importance": "routine", "title": "Introductory Econometrics — chs. 7.5, 7.7, 17", "detail": "Jeffrey Wooldridge · Optional; categorical models"}, {"id": "ppd558-2026-10-13-ff119e0267dc", "date": "2026-10-13", "type": "task", "importance": "major", "title": "Midterm Exam", "detail": "In class · 20%"}, {"id": "ppd558-2026-10-20-ee87c0134b33", "date": "2026-10-20", "type": "task", "importance": "routine", "title": "Analysis Project: Data and Methods", "detail": "Due by start of class"}, {"id": "ppd558-2026-10-27-630cd149eb7c", "date": "2026-10-27", "type": "task", "importance": "routine", "title": "Problem Set 4", "detail": "Due by start of class"}, {"id": "ppd558-2026-10-27-5d7c623ae96e", "date": "2026-10-27", "type": "reading", "importance": "routine", "title": "Using Econometrics — chs. 16.1, 14", "detail": "A.H. Studenmund · Optional"}, {"id": "ppd558-2026-10-27-d19e71c392b6", "date": "2026-10-27", "type": "reading", "importance": "routine", "title": "Introductory Econometrics — chs. 2.7a, 9.4, 15, 16.1–16.3", "detail": "Jeffrey Wooldridge · Optional"}, {"id": "ppd558-2026-11-10-acea945e4b51", "date": "2026-11-10", "type": "task", "importance": "routine", "title": "Analysis Project: Preliminary Results", "detail": "Due by start of class"}, {"id": "ppd558-2026-11-10-2828055c3bd6", "date": "2026-11-10", "type": "reading", "importance": "routine", "title": "Using Econometrics — chs. 16.2–16.3", "detail": "A.H. Studenmund · Optional"}, {"id": "ppd558-2026-11-10-9b7c9ad115c8", "date": "2026-11-10", "type": "reading", "importance": "routine", "title": "Introductory Econometrics — chs. 13–14", "detail": "Jeffrey Wooldridge · Optional"}, {"id": "ppd558-2026-11-17-089bed4acf88", "date": "2026-11-17", "type": "task", "importance": "routine", "title": "In-Class Analysis Exercise", "detail": "Graded in-class activity"}, {"id": "ppd558-2026-11-24-d4f19f72b1cf", "date": "2026-11-24", "type": "task", "importance": "routine", "title": "Problem Set 5", "detail": "Asynchronous week · due by class start time"}, {"id": "ppd558-2026-12-01-2834ea674ec8", "date": "2026-12-01", "type": "task", "importance": "routine", "title": "In-Class Analysis Exercise", "detail": "Graded in-class activity"}, {"id": "ppd558-2026-12-01-c5b5b692f5e8", "date": "2026-12-01", "type": "task", "importance": "major", "title": "Analysis Project: Final Paper", "detail": "Due by start of class · project is 25%"}, {"id": "ppd558-2026-12-10-3c7ad8d74d44", "date": "2026-12-10", "type": "task", "importance": "major", "title": "Final Exam", "detail": "2:00–4:00 PM · 25%"}]}, {"id": "dsci549", "code": "DSCI 549", "title": "Introduction to Computational Thinking and Data Science", "color": "#7367b8", "instructor": "REDACTED", "meeting": "REDACTED", "location": "REDACTED", "office_hours": "After class on request", "assistant": "REDACTED", "tools": ["KNIME", "Piazza", "Brightspace", "Web-based/free analysis tools"], "grading": [{"label": "Five homework assignments", "percent": 20}, {"label": "Midterm exam", "percent": 40}, {"label": "Final exam", "percent": 40}], "textbooks": [], "timeline": [{"id": "dsci549-2026-09-09-b87f0520f3eb", "date": "2026-09-09", "type": "task", "importance": "routine", "title": "HW1 assigned: Analyzing Data", "detail": "Due date not specified in syllabus"}, {"id": "dsci549-2026-09-23-90d1d08261b5", "date": "2026-09-23", "type": "task", "importance": "routine", "title": "HW2 assigned: Machine Learning", "detail": "Due date not specified in syllabus"}, {"id": "dsci549-2026-10-07-792523476801", "date": "2026-10-07", "type": "task", "importance": "major", "title": "Midterm Exam", "detail": "In class · 40%"}, {"id": "dsci549-2026-10-21-1dbc02d8135d", "date": "2026-10-21", "type": "task", "importance": "routine", "title": "HW3 assigned: NLP", "detail": "Due date not specified in syllabus"}, {"id": "dsci549-2026-10-28-c3e576d6ad82", "date": "2026-10-28", "type": "task", "importance": "routine", "title": "HW4 assigned: Data Visualization and Representation", "detail": "Due date not specified in syllabus"}, {"id": "dsci549-2026-11-04-c74824966f06", "date": "2026-11-04", "type": "task", "importance": "routine", "title": "HW5 assigned: Bias in Data", "detail": "Due date not specified in syllabus"}, {"id": "dsci549-2026-12-09-8bcc530080ef", "date": "2026-12-09", "type": "task", "importance": "major", "title": "Final Exam (likely date)", "detail": "Syllabus says “Likely Wednesday, December 9, 2026” · 40%"}]}, {"id": "gsba548", "code": "GSBA 548", "title": "Corporate Finance", "color": "#bd7a24", "instructor": "REDACTED", "meeting": "REDACTED", "location": "REDACTED", "office_hours": "REDACTED", "assistant": "Not listed", "tools": ["Non-internet-enabled calculator", "Brightspace", "Computer + reliable internet"], "grading": [{"label": "Problem sets and quizzes", "percent": 60}, {"label": "Final exam", "percent": 40}], "textbooks": [], "timeline": [{"id": "gsba548-2026-08-24-625242f2ba54", "date": "2026-08-24", "type": "reading", "importance": "routine", "title": "Principles of Corporate Finance — ch. 1", "detail": "Brealey, Myers, Allen & Edmans · Optional"}, {"id": "gsba548-2026-08-26-41dec88b3d29", "date": "2026-08-26", "type": "reading", "importance": "routine", "title": "Principles of Corporate Finance — ch. 2", "detail": "Brealey, Myers, Allen & Edmans · Optional"}, {"id": "gsba548-2026-09-02-135b2353f0fd", "date": "2026-09-02", "type": "reading", "importance": "routine", "title": "Principles of Corporate Finance — ch. 3", "detail": "Brealey, Myers, Allen & Edmans · Optional"}, {"id": "gsba548-2026-09-09-b01cfba02ad3", "date": "2026-09-09", "type": "reading", "importance": "routine", "title": "Principles of Corporate Finance — ch. 4", "detail": "Brealey, Myers, Allen & Edmans · Optional"}, {"id": "gsba548-2026-09-11-babda64db7f8", "date": "2026-09-11", "type": "task", "importance": "routine", "title": "Problem Set 1", "detail": "Due Friday"}, {"id": "gsba548-2026-09-16-0cc194fd2a32", "date": "2026-09-16", "type": "reading", "importance": "routine", "title": "Principles of Corporate Finance — ch. 5", "detail": "Brealey, Myers, Allen & Edmans · Optional"}, {"id": "gsba548-2026-09-16-58e629d96e54", "date": "2026-09-16", "type": "task", "importance": "routine", "title": "Quiz 1", "detail": "In class"}, {"id": "gsba548-2026-09-23-099986ba8f88", "date": "2026-09-23", "type": "reading", "importance": "routine", "title": "Principles of Corporate Finance — ch. 6", "detail": "Brealey, Myers, Allen & Edmans · Optional"}, {"id": "gsba548-2026-09-25-cb20ee7dd716", "date": "2026-09-25", "type": "task", "importance": "routine", "title": "Problem Set 2", "detail": "Due Friday"}, {"id": "gsba548-2026-09-30-7496b6dc640a", "date": "2026-09-30", "type": "reading", "importance": "routine", "title": "Principles of Corporate Finance — ch. 7", "detail": "Brealey, Myers, Allen & Edmans · Optional"}, {"id": "gsba548-2026-09-30-88cab69b7523", "date": "2026-09-30", "type": "task", "importance": "routine", "title": "Quiz 2", "detail": "In class"}, {"id": "gsba548-2026-10-07-8c136966e40a", "date": "2026-10-07", "type": "reading", "importance": "routine", "title": "Principles of Corporate Finance — chs. 8.1–8.2", "detail": "Brealey, Myers, Allen & Edmans · Optional"}, {"id": "gsba548-2026-10-16-36bbb181be75", "date": "2026-10-16", "type": "task", "importance": "routine", "title": "Problem Set 3", "detail": "Due Friday"}, {"id": "gsba548-2026-10-19-47bf3af07b72", "date": "2026-10-19", "type": "reading", "importance": "routine", "title": "Principles of Corporate Finance — chs. 8.1–8.3", "detail": "Brealey, Myers, Allen & Edmans · Optional"}, {"id": "gsba548-2026-10-21-c7ab4104fab0", "date": "2026-10-21", "type": "task", "importance": "routine", "title": "Quiz 3", "detail": "In class"}, {"id": "gsba548-2026-10-28-d3da5f14b9a0", "date": "2026-10-28", "type": "reading", "importance": "routine", "title": "Principles of Corporate Finance — ch. 9", "detail": "Brealey, Myers, Allen & Edmans · Optional"}, {"id": "gsba548-2026-10-30-cfce31ec31e3", "date": "2026-10-30", "type": "task", "importance": "routine", "title": "Problem Set 4", "detail": "Due Friday"}, {"id": "gsba548-2026-11-02-83f05dd3b679", "date": "2026-11-02", "type": "reading", "importance": "routine", "title": "Principles of Corporate Finance — chs. 11–12", "detail": "Brealey, Myers, Allen & Edmans · Optional"}, {"id": "gsba548-2026-11-04-ae4a27376106", "date": "2026-11-04", "type": "task", "importance": "routine", "title": "Quiz 4", "detail": "In class"}, {"id": "gsba548-2026-11-09-a56d807cec01", "date": "2026-11-09", "type": "reading", "importance": "routine", "title": "Principles of Corporate Finance — chs. 13–14", "detail": "Brealey, Myers, Allen & Edmans · Optional"}, {"id": "gsba548-2026-11-13-68dbd502de37", "date": "2026-11-13", "type": "task", "importance": "routine", "title": "Problem Set 5", "detail": "Due Friday"}, {"id": "gsba548-2026-11-18-85d02f09806d", "date": "2026-11-18", "type": "reading", "importance": "routine", "title": "Principles of Corporate Finance — ch. 15", "detail": "Brealey, Myers, Allen & Edmans · Optional"}, {"id": "gsba548-2026-11-18-32f8ae776876", "date": "2026-11-18", "type": "task", "importance": "routine", "title": "Quiz 5", "detail": "In class"}, {"id": "gsba548-2026-11-23-42872fde8537", "date": "2026-11-23", "type": "reading", "importance": "routine", "title": "Principles of Corporate Finance — ch. 16", "detail": "Brealey, Myers, Allen & Edmans · Optional"}, {"id": "gsba548-2026-11-30-f5c1a73b293b", "date": "2026-11-30", "type": "reading", "importance": "routine", "title": "Principles of Corporate Finance — ch. 17", "detail": "Brealey, Myers, Allen & Edmans · Optional"}, {"id": "gsba548-2026-12-04-4443b1d8d0f3", "date": "2026-12-04", "type": "task", "importance": "routine", "title": "Problem Set 6", "detail": "Due Friday"}, {"id": "gsba548-2026-12-11-b4ec716c8639", "date": "2026-12-11", "type": "task", "importance": "major", "title": "Final Exam", "detail": "11:00 AM–1:00 PM · cumulative · 40%"}]}, {"id": "ppd503", "code": "PPD 503", "title": "Economics for Public Policy", "color": "#3f6f9c", "instructor": "REDACTED", "meeting": "REDACTED", "location": "REDACTED", "office_hours": "REDACTED", "assistant": "REDACTED", "tools": ["Standalone calculator", "Brightspace", "Word or PDF", "Adobe Scan (recommended)", "Zoom"], "grading": [{"label": "Problem sets", "percent": 25}, {"label": "Case studies", "percent": 10}, {"label": "Midterm exam", "percent": 30}, {"label": "Final exam", "percent": 35}], "textbooks": [{"title": "Microeconomics", "authors": "Robert Pindyck & Daniel Rubinfeld", "note": "7th, 8th, or 9th ed. · Required"}], "timeline": [{"id": "ppd503-2026-08-26-8addf520c8ab", "date": "2026-08-26", "type": "reading", "importance": "routine", "title": "Microeconomics — chs. 1–2", "detail": "Pindyck & Rubinfeld · Required"}, {"id": "ppd503-2026-08-26-263baa1ab4e2", "date": "2026-08-26", "type": "reading", "importance": "routine", "title": "The Economist as Plumber", "detail": "Esther Duflo (2017) · Schedule reading"}, {"id": "ppd503-2026-08-26-1d9ba52e5a07", "date": "2026-08-26", "type": "reading", "importance": "routine", "title": "Economists vs. Economics", "detail": "Dani Rodrik (2015) · Schedule reading"}, {"id": "ppd503-2026-08-26-cf9ddd11456d", "date": "2026-08-26", "type": "reading", "importance": "routine", "title": "Nearly $9 a Dozen: Why Egg Prices Are Skyrocketing", "detail": "Karen Garcia, LA Times (2025) · Schedule reading"}, {"id": "ppd503-2026-08-26-ef35a84d0e42", "date": "2026-08-26", "type": "reading", "importance": "routine", "title": "Rents Likely to Balloon in Wake of L.A. Wildfires", "detail": "Liam Dillon, LA Times (2025) · Schedule reading"}, {"id": "ppd503-2026-09-02-7be2b0e14758", "date": "2026-09-02", "type": "task", "importance": "routine", "title": "Problem Set 1", "detail": "Due at beginning of class"}, {"id": "ppd503-2026-09-02-26ed0fd7b0d2", "date": "2026-09-02", "type": "reading", "importance": "routine", "title": "Microeconomics — chs. 3–4", "detail": "Pindyck & Rubinfeld · ch. 4 appendix optional"}, {"id": "ppd503-2026-09-02-c3ec9be03c5f", "date": "2026-09-02", "type": "reading", "importance": "routine", "title": "The Great Trailblazer: Economists Mourn Gary Becker", "detail": "The Economist (2014) · Schedule reading"}, {"id": "ppd503-2026-09-02-78de130ca3d3", "date": "2026-09-02", "type": "reading", "importance": "routine", "title": "Nice Work if You Can Get Out", "detail": "The Economist (2014) · Schedule reading"}, {"id": "ppd503-2026-09-09-389f1c70085e", "date": "2026-09-09", "type": "task", "importance": "routine", "title": "Problem Set 2", "detail": "Due at beginning of class"}, {"id": "ppd503-2026-09-09-009002e79bb7", "date": "2026-09-09", "type": "reading", "importance": "routine", "title": "Microeconomics — chs. 6–8", "detail": "Pindyck & Rubinfeld · §§7.6–7.7 and ch. 7 appendix optional"}, {"id": "ppd503-2026-09-16-de6636d2ad48", "date": "2026-09-16", "type": "task", "importance": "routine", "title": "Problem Set 3", "detail": "Due at beginning of class"}, {"id": "ppd503-2026-09-16-a89f31e841b5", "date": "2026-09-16", "type": "reading", "importance": "routine", "title": "Microeconomics — chs. 9, 16", "detail": "Pindyck & Rubinfeld · Required"}, {"id": "ppd503-2026-09-16-f55e7859c0c8", "date": "2026-09-16", "type": "reading", "importance": "routine", "title": "How Food Banks Use Markets to Feed the Poor", "detail": "Canice Prendergast (2017) · Schedule reading"}, {"id": "ppd503-2026-09-16-568a91fc96eb", "date": "2026-09-16", "type": "reading", "importance": "routine", "title": "Saving Capitalism from Econ 101", "detail": "Simon Johnson (2018) · Schedule reading"}, {"id": "ppd503-2026-09-16-b9d71b161f8b", "date": "2026-09-16", "type": "reading", "importance": "routine", "title": "Harris’ Plan to Stop Price Gouging Could Create More Problems", "detail": "Elisabeth Buchwald, CNN · Schedule reading"}, {"id": "ppd503-2026-09-16-bb864ebb28bd", "date": "2026-09-16", "type": "reading", "importance": "routine", "title": "The Fight over Fifteen", "detail": "The Economist (2021) · Schedule reading"}, {"id": "ppd503-2026-09-23-3e48122ce5cd", "date": "2026-09-23", "type": "task", "importance": "routine", "title": "Case Study 1", "detail": "Due at beginning of class"}, {"id": "ppd503-2026-09-23-ef7fdca33c14", "date": "2026-09-23", "type": "reading", "importance": "routine", "title": "Impacts of Neighborhoods on Intergenerational Mobility: Executive Summary", "detail": "Raj Chetty & Nathaniel Hendren (2015) · Schedule reading"}, {"id": "ppd503-2026-09-23-b6db3f395567", "date": "2026-09-23", "type": "reading", "importance": "routine", "title": "Mapping the Childhood Roots of Social Mobility: Executive Summary", "detail": "Chetty, Friedman, Hendren, Jones & Porter (2018) · Schedule reading"}, {"id": "ppd503-2026-09-30-8fa95c92348d", "date": "2026-09-30", "type": "task", "importance": "routine", "title": "Problem Set 4", "detail": "Due at beginning of class"}, {"id": "ppd503-2026-09-30-1652af9daffa", "date": "2026-09-30", "type": "reading", "importance": "routine", "title": "How the Census Bureau Measures Poverty", "detail": "U.S. Census Bureau (2022) · Required article"}, {"id": "ppd503-2026-09-30-f2b4af91eea5", "date": "2026-09-30", "type": "reading", "importance": "routine", "title": "Policy Analysis — ch. 7", "detail": "Weimer & Vining · Schedule reading"}, {"id": "ppd503-2026-09-30-92e8176c061c", "date": "2026-09-30", "type": "reading", "importance": "routine", "title": "The Development and History of the U.S. Poverty Thresholds", "detail": "Gordon M. Fisher (1997) · Schedule reading"}, {"id": "ppd503-2026-09-30-a5eb10223b73", "date": "2026-09-30", "type": "reading", "importance": "routine", "title": "Child Poverty in the US Was Stagnant — and Then Something Changed", "detail": "Shaefer, Cooney & Stevenson, Vox (2022) · Schedule reading"}, {"id": "ppd503-2026-09-30-eb74ca63816f", "date": "2026-09-30", "type": "reading", "importance": "routine", "title": "Consumption and Income Inequality in the U.S. since the 1960s", "detail": "Meyer & Sullivan (2023), pp. 247–284 · Schedule reading"}, {"id": "ppd503-2026-10-07-412a3fe1f800", "date": "2026-10-07", "type": "task", "importance": "major", "title": "Midterm Exam", "detail": "Regular class time · 30%"}, {"id": "ppd503-2026-10-14-1f94f9d056d1", "date": "2026-10-14", "type": "reading", "importance": "routine", "title": "Microeconomics — ch. 10", "detail": "Pindyck & Rubinfeld · Required"}, {"id": "ppd503-2026-10-14-a7895c97c3c0", "date": "2026-10-14", "type": "reading", "importance": "routine", "title": "Policy Analysis — chs. 4; 5, pp. 98–104", "detail": "Weimer & Vining · Schedule reading"}, {"id": "ppd503-2026-10-21-12298d6e1d62", "date": "2026-10-21", "type": "task", "importance": "routine", "title": "Problem Set 5", "detail": "Due at beginning of class"}, {"id": "ppd503-2026-10-21-759eebb99c18", "date": "2026-10-21", "type": "reading", "importance": "routine", "title": "Microeconomics — chs. 11.1–11.2, 12", "detail": "Pindyck & Rubinfeld · Required"}, {"id": "ppd503-2026-10-21-a4f6f6a7babc", "date": "2026-10-21", "type": "reading", "importance": "routine", "title": "Monopoly’s New Era", "detail": "Joseph E. Stiglitz (2016) · Schedule reading"}, {"id": "ppd503-2026-10-21-fb5a0efb2302", "date": "2026-10-21", "type": "reading", "importance": "routine", "title": "No More Mylan Monopolies", "detail": "Geoffrey F. Joyce & Neeraj Sood (2016) · Schedule reading"}, {"id": "ppd503-2026-10-21-09b955589085", "date": "2026-10-21", "type": "reading", "importance": "routine", "title": "Why Economics Must Go Digital", "detail": "Diane Coyle (2019) · Schedule reading"}, {"id": "ppd503-2026-10-21-825c5a5c1a8b", "date": "2026-10-21", "type": "reading", "importance": "routine", "title": "No, Rent Control Doesn’t Always Reduce the Supply of Housing", "detail": "Gary Painter, LA Times (2018) · Schedule reading"}, {"id": "ppd503-2026-10-21-0ecb48531d2b", "date": "2026-10-21", "type": "reading", "importance": "routine", "title": "Labor Market Monopsony: Trends, Consequences, and Policy Responses", "detail": "Council of Economic Advisers (2016) · Schedule reading"}, {"id": "ppd503-2026-10-28-4aa127337b5b", "date": "2026-10-28", "type": "task", "importance": "routine", "title": "Case Study 2", "detail": "Due at beginning of class"}, {"id": "ppd503-2026-10-28-5a9e7f54eacc", "date": "2026-10-28", "type": "reading", "importance": "routine", "title": "Microeconomics — ch. 18", "detail": "Pindyck & Rubinfeld · §18.3 optional"}, {"id": "ppd503-2026-10-28-df609b0393a0", "date": "2026-10-28", "type": "reading", "importance": "routine", "title": "Policy Analysis — ch. 5, pp. 74–98", "detail": "Weimer & Vining · Schedule reading"}, {"id": "ppd503-2026-10-28-30217a2ea58c", "date": "2026-10-28", "type": "reading", "importance": "routine", "title": "Why Governments Should Spend More Money on Public Goods", "detail": "Tim Worstall, Forbes (2013) · Schedule reading"}, {"id": "ppd503-2026-10-28-2b399d02f722", "date": "2026-10-28", "type": "reading", "importance": "routine", "title": "To Fight Pandemics, Reward Research", "detail": "Tyler Cowen, New York Times (2013) · Schedule reading"}, {"id": "ppd503-2026-10-28-963d5f83cd97", "date": "2026-10-28", "type": "reading", "importance": "routine", "title": "Commons Sense", "detail": "The Economist (2008) · Schedule reading"}, {"id": "ppd503-2026-10-28-00d20a6c9ab2", "date": "2026-10-28", "type": "reading", "importance": "routine", "title": "Elinor Ostrom", "detail": "The Economist (2012) · Schedule reading"}, {"id": "ppd503-2026-11-04-8db236649430", "date": "2026-11-04", "type": "task", "importance": "routine", "title": "Problem Set 6", "detail": "Due at beginning of class"}, {"id": "ppd503-2026-11-04-a7f20b71e13e", "date": "2026-11-04", "type": "reading", "importance": "routine", "title": "Externalities: Pigouvian Taxes", "detail": "The Economist (2017) · Schedule reading"}, {"id": "ppd503-2026-11-04-ec657788640e", "date": "2026-11-04", "type": "reading", "importance": "routine", "title": "Waist Banned: Does a Tax on Junk Food Make Sense?", "detail": "The Economist (2009) · Schedule reading"}, {"id": "ppd503-2026-11-18-2bb3bf715a41", "date": "2026-11-18", "type": "task", "importance": "routine", "title": "Case Study 3", "detail": "Due at beginning of class"}, {"id": "ppd503-2026-11-18-e70c8abe4e0f", "date": "2026-11-18", "type": "reading", "importance": "routine", "title": "Microeconomics — ch. 17", "detail": "Pindyck & Rubinfeld · §§17.5–17.6 optional"}, {"id": "ppd503-2026-11-18-0e873a6e7e61", "date": "2026-11-18", "type": "reading", "importance": "routine", "title": "Policy Analysis — ch. 5, pp. 104–113; ch. 6, pp. 119–127", "detail": "Weimer & Vining · Schedule reading"}, {"id": "ppd503-2026-11-18-24c1d0e1612a", "date": "2026-11-18", "type": "reading", "importance": "routine", "title": "Information Asymmetry: Secrets and Agents", "detail": "The Economist (2016) · Schedule reading"}, {"id": "ppd503-2026-11-18-f1946633edb2", "date": "2026-11-18", "type": "reading", "importance": "routine", "title": "Paying Teachers More", "detail": "The Economist (2000) · Schedule reading"}, {"id": "ppd503-2026-11-18-b12b42f8dd0a", "date": "2026-11-18", "type": "reading", "importance": "routine", "title": "Intelligent Design", "detail": "The Economist (2007) · Schedule reading"}, {"id": "ppd503-2026-12-02-27715ea0934c", "date": "2026-12-02", "type": "task", "importance": "routine", "title": "Problem Set 7", "detail": "Due at beginning of class"}, {"id": "ppd503-2026-12-02-c50be89e6493", "date": "2026-12-02", "type": "reading", "importance": "routine", "title": "The Folk Economics of Housing", "detail": "Elmendorf, Nall & Oklobdjiza (2025), pp. 45–66 · Required article"}, {"id": "ppd503-2026-12-02-e91ea02d0a73", "date": "2026-12-02", "type": "reading", "importance": "routine", "title": "Policy Analysis — chs. 8–10", "detail": "Weimer & Vining · Schedule reading"}, {"id": "ppd503-2026-12-02-518404609b3d", "date": "2026-12-02", "type": "reading", "importance": "routine", "title": "Richard Thaler Wins the Nobel Prize for Economic Sciences", "detail": "The Economist (2017) · Schedule reading"}, {"id": "ppd503-2026-12-02-661deb083faa", "date": "2026-12-02", "type": "reading", "importance": "routine", "title": "Pensions: Nudge Nudge", "detail": "The Economist (2012) · Schedule reading"}, {"id": "ppd503-2026-12-02-e80c0c7f9b0d", "date": "2026-12-02", "type": "reading", "importance": "routine", "title": "Ezra Klein Interviews Jenny Schuetz", "detail": "The Ezra Klein Show transcript (2022) · Schedule reading"}, {"id": "ppd503-2026-12-09-83928ef1560e", "date": "2026-12-09", "type": "task", "importance": "major", "title": "Final Exam", "detail": "7:00–9:00 PM · 35%"}]}]}</script>
+
+  <!-- Section K: Dashboard behavior and persistence -->
+  <script>
+    (() => {
+      "use strict";
+
+      // Section K1: Read the embedded, Python-generated course data.
+      const DATA = JSON.parse(document.getElementById("dashboard-data").textContent);
+      const app = document.getElementById("app");
+      const saveStatus = document.getElementById("saveStatus");
+      const courseById = new Map(DATA.courses.map(course => [course.id, course]));
+      const allItems = DATA.courses.flatMap(course =>
+        course.timeline.map(item => ({...item, courseId: course.id}))
+      ).sort((a, b) => a.date.localeCompare(b.date) || a.title.localeCompare(b.title));
+
+      // Section K2: Use the host artifact API when available. A downloaded file
+      // cannot receive that host API, so IndexedDB is the standards-based fallback.
+      // localStorage is deliberately never used.
+      const STORAGE_KEY = "semester-dashboard-completion-v1";
+      const ArtifactStore = {
+        host: window.artifactStorage || window.storage || null,
+        async get(key) {
+          if (this.host) {
+            const result = this.host.getItem
+              ? await this.host.getItem(key)
+              : await this.host.get(key);
+            return result && typeof result === "object" && "value" in result ? result.value : result;
+          }
+          return this.idb("readonly", store => store.get(key));
+        },
+        async set(key, value) {
+          if (this.host) {
+            return this.host.setItem
+              ? await this.host.setItem(key, value)
+              : await this.host.set(key, value);
+          }
+          return this.idb("readwrite", store => store.put(value, key));
+        },
+        async idb(mode, operation) {
+          const db = await new Promise((resolve, reject) => {
+            const request = indexedDB.open("semester-dashboard", 1);
+            request.onupgradeneeded = () => request.result.createObjectStore("state");
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = () => reject(request.error);
+          });
+          return new Promise((resolve, reject) => {
+            const tx = db.transaction("state", mode);
+            const request = operation(tx.objectStore("state"));
+            request.onsuccess = () => resolve(request.result ?? null);
+            request.onerror = () => reject(request.error);
+            tx.oncomplete = () => db.close();
+          });
+        }
+      };
+
+      // Section K3: UI state, formatting helpers, and safe HTML escaping.
+      const state = { completed: new Set(), filter: "all", hideCompleted: false };
+      const escapeHTML = value => String(value ?? "")
+        .replaceAll("&", "&amp;").replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
+      // Parse YYYY-MM-DD defensively: anything else (null, "[REDACTED]", a
+      // number) yields null instead of an Invalid Date that would throw in Intl.
+      const parseISO = (iso, time = "12:00:00") => {
+        if (typeof iso !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return null;
+        const date = new Date(`${iso}T${time}`);
+        return Number.isNaN(date.getTime()) ? null : date;
+      };
+      const formatDate = iso => {
+        const date = parseISO(iso);
+        return date ? new Intl.DateTimeFormat(undefined, {
+          weekday: "short", month: "short", day: "numeric"
+        }).format(date) : String(iso ?? "Undated");
+      };
+      const formatLongDate = iso => {
+        const date = parseISO(iso);
+        return date ? new Intl.DateTimeFormat(undefined, {
+          month: "long", day: "numeric", year: "numeric"
+        }).format(date) : "—";
+      };
+      const courseColor = course => course.color || "#e0603e";
+      const itemCount = course => course.timeline.length;
+      const completedCount = course => course.timeline.filter(item => state.completed.has(item.id)).length;
+      const localISODate = date => [date.getFullYear(), String(date.getMonth() + 1).padStart(2, "0"), String(date.getDate()).padStart(2, "0")].join("-");
+
+      // Section K4: Calculate calendar progress without hard-coding today's date.
+      function semesterProgress() {
+        const start = parseISO(DATA.semester.start_date, "00:00:00");
+        const end = parseISO(DATA.semester.end_date, "23:59:59");
+        if (!start || !end || end <= start) {
+          return { label: "Dates not set", detail: "Add semester dates", percent: 0 };
+        }
+        const now = new Date();
+        const elapsedDays = Math.max(0, Math.min((now - start) / 86400000, (end - start) / 86400000));
+        const totalDays = Math.max(1, (end - start) / 86400000);
+        const weeksElapsed = Math.min(Math.ceil(totalDays / 7), Math.max(0, Math.floor(elapsedDays / 7) + 1));
+        const totalWeeks = Math.ceil(totalDays / 7);
+        return {
+          label: now < start ? "Starts soon" : now > end ? "Semester complete" : `Week ${weeksElapsed} of ${totalWeeks}`,
+          detail: `${formatLongDate(DATA.semester.start_date)} — ${formatLongDate(DATA.semester.end_date)}`,
+          percent: Math.round((elapsedDays / totalDays) * 100)
+        };
+      }
+
+      // Section K5: Render the masthead and filter controls.
+      function renderHeader() {
+        const progress = semesterProgress();
+        const courseButtons = DATA.courses.map(course => `
+          <button class="filter-button" data-filter="${escapeHTML(course.id)}"
+            aria-pressed="${state.filter === course.id}">${escapeHTML(course.code)}</button>
+        `).join("");
+        return `
+          <header class="masthead">
+            <div class="masthead-grid">
+              <div>
+                <p class="eyebrow">Academic field guide</p>
+                <h1>${escapeHTML(DATA.semester.name)}</h1>
+                <p class="subtitle">${DATA.courses.length} courses · ${allItems.filter(item => item.type === "reading").length} readings · ${allItems.filter(item => item.type === "task").length} tasks. One calm, chronological view.</p>
+              </div>
+              <div class="week-card" aria-label="Semester progress">
+                <div class="week-label"><span>Weeks elapsed</span><span>${progress.percent}%</span></div>
+                <strong class="week-value">${escapeHTML(progress.label)}</strong>
+                <div class="meter" aria-hidden="true"><span style="width:${progress.percent}%"></span></div>
+                <div class="week-label" style="margin-top:10px"><span>${escapeHTML(progress.detail)}</span></div>
+              </div>
+            </div>
+          </header>
+          <nav class="control-bar" aria-label="Timeline filters">
+            <div class="filters">
+              <button class="filter-button" data-filter="all" aria-pressed="${state.filter === "all"}">All courses</button>
+              ${courseButtons}
+              <button class="filter-button" data-filter="major" aria-pressed="${state.filter === "major"}">Exams + major work</button>
+              <button class="filter-button jump-button" id="jumpToday" type="button">Jump to next ↓</button>
+            </div>
+            <label class="toggle"><input id="hideCompleted" type="checkbox" ${state.hideCompleted ? "checked" : ""}> Hide completed</label>
+          </nav>`;
+      }
+
+      // Section K6: Render compact course reference cards.
+      function renderCourseCards() {
+        if (!DATA.courses.length) return renderEmpty("Course details are waiting for the syllabus files.");
+        return `<div class="course-grid">${DATA.courses.map(course => {
+          const done = completedCount(course);
+          const total = itemCount(course);
+          const assistant = course.assistant || "Not listed";
+          const tools = (course.tools || []).length ? course.tools : ["None listed"];
+          return `<article class="course-card" style="--course-color:${courseColor(course)}">
+            <div class="course-card__head">
+              <div><p class="course-code">${escapeHTML(course.code)}</p><h3>${escapeHTML(course.title)}</h3></div>
+              <div class="progress-badge"><strong>${done}/${total}</strong> complete</div>
+            </div>
+            <dl class="course-facts">
+              <div class="fact"><dt>Instructor</dt><dd>${escapeHTML(course.instructor || "Not listed")}</dd></div>
+              <div class="fact"><dt>Meeting</dt><dd>${escapeHTML(course.meeting || "Not listed")}</dd></div>
+              <div class="fact"><dt>Location</dt><dd>${escapeHTML(course.location || "Not listed")}</dd></div>
+              <div class="fact"><dt>Office hours</dt><dd>${escapeHTML(course.office_hours || "Not listed")}</dd></div>
+              <div class="fact" style="grid-column:1/-1"><dt>Course assistant</dt><dd>${escapeHTML(assistant)}</dd></div>
+            </dl>
+            <div class="tool-list" aria-label="Required tools">${tools.map(tool => `<span class="tool-chip">${escapeHTML(tool)}</span>`).join("")}</div>
+          </article>`;
+        }).join("")}</div>`;
+      }
+
+      // Section K7: Render textbooks and grading breakdowns.
+      function renderReferencePanels() {
+        const books = DATA.courses.flatMap(course => (course.textbooks || []).map(book => ({...book, course})));
+        const bookHTML = books.length ? books.map(({title, authors, note, course}) => `
+          <div class="book"><strong>${escapeHTML(title)}</strong><small>${escapeHTML(authors || "")}${authors && note ? " · " : ""}${escapeHTML(note || "")} · ${escapeHTML(course.code)}</small></div>
+        `).join("") : `<p class="section-note" style="text-align:left">No required textbooks are available yet.</p>`;
+        const gradeHTML = DATA.courses.length ? DATA.courses.map(course => `
+          <div class="grade-course" style="--course-color:${courseColor(course)}">
+            <div class="grade-course-title"><span class="dot"></span>${escapeHTML(course.code)}</div>
+            ${(course.grading || []).map(part => `<div class="grade-row"><span>${escapeHTML(part.label)}</span><strong>${escapeHTML(part.percent)}%</strong><div class="grade-track"><span style="width:${Math.min(100, Number(part.percent) || 0)}%"></span></div></div>`).join("") || `<small>No grading breakdown listed.</small>`}
+          </div>
+        `).join("") : `<p class="section-note" style="text-align:left">No grading data is available yet.</p>`;
+        return `<div class="reference-grid">
+          <section class="panel"><p class="eyebrow">Required reading</p><h3>Textbook shelf</h3><div class="book-list">${bookHTML}</div></section>
+          <section class="panel"><p class="eyebrow">How grades add up</p><h3>Grading breakdown</h3><div class="grading-list">${gradeHTML}</div></section>
+        </div>`;
+      }
+
+      // Section K8: Filter and render the cross-course chronological timeline.
+      function visibleItems() {
+        return allItems.filter(item => {
+          const matches = state.filter === "all" || item.courseId === state.filter ||
+            (state.filter === "major" && item.type === "task" && item.importance === "major");
+          return matches && !(state.hideCompleted && state.completed.has(item.id));
+        });
+      }
+
+      function renderTimeline() {
+        const items = visibleItems();
+        if (!allItems.length) return renderEmpty("The combined timeline will appear after the weekly schedules are extracted.");
+        if (!items.length) return renderEmpty("Nothing matches these filters. Try showing completed work or all courses.");
+        const today = localISODate(new Date());
+        const nextDate = items.find(item => parseISO(item.date) && item.date >= today)?.date || items.at(-1).date;
+        const groups = Map.groupBy ? Map.groupBy(items, item => item.date) : items.reduce((map, item) => {
+          if (!map.has(item.date)) map.set(item.date, []);
+          map.get(item.date).push(item);
+          return map;
+        }, new Map());
+        return `<div class="timeline">${[...groups].map(([date, dateItems]) => `
+          <section class="date-group ${date === nextDate ? "next-up" : ""}" data-date-group="${escapeHTML(date)}">
+            <div class="date-column"><time datetime="${escapeHTML(date)}">${escapeHTML(formatDate(date))}</time><small>${dateItems.length} item${dateItems.length === 1 ? "" : "s"}</small></div>
+            <div class="date-items">${dateItems.map(item => {
+              const course = courseById.get(item.courseId);
+              const done = state.completed.has(item.id);
+              return `<article class="timeline-item ${done ? "done" : ""}" style="--course-color:${courseColor(course)}">
+                <label class="check-wrap" aria-label="Mark ${escapeHTML(item.title)} complete">
+                  <input type="checkbox" data-item-id="${escapeHTML(item.id)}" ${done ? "checked" : ""}>
+                  <span class="custom-check"></span>
+                </label>
+                <div><p class="item-title">${escapeHTML(item.title)}</p>${item.detail ? `<p class="item-detail">${escapeHTML(item.detail)}</p>` : ""}</div>
+                <div class="tags"><span class="tag course">${escapeHTML(course.code)}</span><span class="tag">${item.type === "reading" ? "Reading" : "Task"}</span>${item.importance === "major" ? `<span class="tag major">Major</span>` : ""}</div>
+              </article>`;
+            }).join("")}</div>
+          </section>`).join("")}</div>`;
+      }
+
+      // Section K9: Shared empty-state component and full-page render.
+      function renderEmpty(message) {
+        return `<div class="empty-state"><span class="mark">∴</span><h3>Ready for source material</h3><p>${escapeHTML(message)}</p></div>`;
+      }
+
+      function render() {
+        app.innerHTML = `${renderHeader()}
+          <section><div class="section-heading"><div><p class="eyebrow">At a glance</p><h2>Course atlas</h2></div><p class="section-note">People, places, office hours, and software—without reopening a PDF.</p></div>${renderCourseCards()}</section>
+          <section><div class="section-heading"><div><p class="eyebrow">Reference desk</p><h2>Books + grading</h2></div></div>${renderReferencePanels()}</section>
+          <section><div class="section-heading"><div><p class="eyebrow">One semester, one sequence</p><h2>Master timeline</h2></div><p class="section-note">Readings and graded work are interleaved by date. Major work receives an extra marker.</p></div>${renderTimeline()}</section>`;
+        bindEvents();
+      }
+
+      // Section K10: Event handlers and automatically persisted completion state.
+      function bindEvents() {
+        document.querySelectorAll("[data-filter]").forEach(button => button.addEventListener("click", () => {
+          state.filter = button.dataset.filter;
+          render();
+        }));
+        document.getElementById("hideCompleted").addEventListener("change", event => {
+          state.hideCompleted = event.target.checked;
+          render();
+        });
+        document.getElementById("jumpToday").addEventListener("click", () => {
+          const next = document.querySelector(".date-group.next-up");
+          if (next) next.scrollIntoView({behavior: "smooth", block: "start"});
+        });
+        document.querySelectorAll("[data-item-id]").forEach(box => box.addEventListener("change", async () => {
+          box.checked ? state.completed.add(box.dataset.itemId) : state.completed.delete(box.dataset.itemId);
+          render();
+          await saveState();
+        }));
+      }
+
+      async function saveState() {
+        try {
+          await ArtifactStore.set(STORAGE_KEY, JSON.stringify([...state.completed]));
+          saveStatus.textContent = ArtifactStore.host ? "Saved to artifact" : "Saved on this browser";
+        } catch (error) {
+          console.error("Could not save dashboard state", error);
+          saveStatus.textContent = "Could not save";
+        }
+        saveStatus.classList.add("show");
+        setTimeout(() => saveStatus.classList.remove("show"), 1400);
+      }
+
+      // Section K11: Restore completion state before the first paint.
+      (async function initialize() {
+        try {
+          const saved = await ArtifactStore.get(STORAGE_KEY);
+          if (saved) state.completed = new Set(JSON.parse(saved));
+        } catch (error) {
+          console.warn("No saved dashboard state could be restored", error);
+        }
+        render();
+      })();
+    })();
+  </script>
+</body>
+</html>
